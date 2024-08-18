@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda functions for SQS operations
+
+Resources:
+  SendMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: send_message.lambda_handler
+      Runtime: python3.11
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /send
+            Method: post
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt MySQSQueue.QueueName
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref MySQSQueue
+
+  ReceiveMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: receive_message.lambda_handler
+      Runtime: python3.11
+      Timeout: 30  # Set the Lambda timeout to 30 seconds
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /receive
+            Method: get
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt MySQSQueue.QueueName
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref MySQSQueue
+
+  MySQSQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: my-sqs-queue
+
+Outputs:
+  SendMessageApi:
+    Description: API Gateway endpoint URL for Send Message function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/send/"
+  ReceiveMessageApi:
+    Description: API Gateway endpoint URL for Receive Message function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/receive/"
+
