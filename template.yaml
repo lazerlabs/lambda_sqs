@@ -45,7 +45,7 @@ Resources:
   MySQSQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: my-sqs-queue
+      QueueName: ibeam-sqs-queue
 
 Outputs:
   SendMessageApi:
