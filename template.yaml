@@ -18,9 +18,11 @@ Resources:
       Policies:
         - SQSSendMessagePolicy:
             QueueName: !GetAtt MySQSQueue.QueueName
-      Environment:
-        Variables:
-          SQS_QUEUE_URL: !Ref MySQSQueue
+        - Statement:
+          - Effect: Allow
+            Action:
+              - sqs:GetQueueUrl
+            Resource: !GetAtt MySQSQueue.Arn
 
   ReceiveMessageFunction:
     Type: AWS::Serverless::Function
@@ -38,9 +40,11 @@ Resources:
       Policies:
         - SQSPollerPolicy:
             QueueName: !GetAtt MySQSQueue.QueueName
-      Environment:
-        Variables:
-          SQS_QUEUE_URL: !Ref MySQSQueue
+        - Statement:
+          - Effect: Allow
+            Action:
+              - sqs:GetQueueUrl
+            Resource: !GetAtt MySQSQueue.Arn
 
   MySQSQueue:
     Type: AWS::SQS::Queue

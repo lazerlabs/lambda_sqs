@@ -1,11 +1,15 @@
 import json
 import boto3
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     sqs = boto3.client('sqs')
-    queue_url = sqs.get_queue_url(QueueName='my-sqs-queue')['QueueUrl']
-
+    queue_url = sqs.get_queue_url(QueueName='ibeam-sqs-queue')['QueueUrl']
+    
     message = event['body']
     
     try:

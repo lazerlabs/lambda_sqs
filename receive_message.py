@@ -4,7 +4,7 @@ import os
 
 def lambda_handler(event, context):
     sqs = boto3.client('sqs')
-    queue_url = sqs.get_queue_url(QueueName='my-sqs-queue')['QueueUrl']
+    queue_url = sqs.get_queue_url(QueueName='ibeam-sqs-queue')['QueueUrl']
 
     try:
         # Calculate remaining time
