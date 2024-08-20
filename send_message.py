@@ -15,13 +15,22 @@ def lambda_handler(event, context):
     try:
         response = sqs.send_message(
             QueueUrl=queue_url,
-            MessageBody=message
+            MessageBody=message,
+            MessageAttributes={
+                'MessageTTL': {
+                    'DataType': 'Number',
+                    'StringValue': '300'
+                }
         )
+
+        logger.info(f"Message sent successfully. MessageId: {response['MessageId']}")
+
         return {
             'statusCode': 200,
             'body': 'Message sent successfully'
         }
     except Exception as e:
+        logger.error(f"Error sending message: {str(e)}")
         return {
             'statusCode': 500,
             'body': json.dumps(f'Error: {str(e)}')
