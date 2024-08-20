@@ -50,6 +50,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: ibeam-sqs-queue
+      MessageRetentionPeriod: 300
 
 Outputs:
   SendMessageApi:
