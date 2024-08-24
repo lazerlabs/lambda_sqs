@@ -8,19 +8,15 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     sqs = boto3.client('sqs')
-    queue_url = sqs.get_queue_url(QueueName='ibeam-sqs-queue')['QueueUrl']
+    queue_url = os.environ['SQS_QUEUE_URL']
     
     message = event['body']
     
     try:
+        # code inside the try block
         response = sqs.send_message(
             QueueUrl=queue_url,
             MessageBody=message,
-            MessageAttributes={
-                'MessageTTL': {
-                    'DataType': 'Number',
-                    'StringValue': '300'
-                }
         )
 
         logger.info(f"Message sent successfully. MessageId: {response['MessageId']}")

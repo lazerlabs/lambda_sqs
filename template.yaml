@@ -23,6 +23,9 @@ Resources:
             Action:
               - sqs:GetQueueUrl
             Resource: !GetAtt MySQSQueue.Arn
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref MySQSQueue
 
   ReceiveMessageFunction:
     Type: AWS::Serverless::Function
@@ -45,6 +48,10 @@ Resources:
             Action:
               - sqs:GetQueueUrl
             Resource: !GetAtt MySQSQueue.Arn
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref MySQSQueue
+  
 
   MySQSQueue:
     Type: AWS::SQS::Queue
